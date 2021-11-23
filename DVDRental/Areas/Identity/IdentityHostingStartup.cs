@@ -19,12 +19,16 @@ namespace DVDRental.Areas.Identity
                     options.UseNpgsql(
                         context.Configuration.GetConnectionString("IdentityContextConnection")));
 
-                services.AddDefaultIdentity<IdentityUser>(options => {
-                    options.SignIn.RequireConfirmedAccount = false;
+                services.AddIdentity<IdentityUser, IdentityRole>(options => {
+                    options.SignIn.RequireConfirmedEmail = false;
                     options.SignIn.RequireConfirmedPhoneNumber = false;
                     options.Password.RequireNonAlphanumeric = false;
                 })
+                    .AddDefaultUI()
+                    .AddDefaultTokenProviders()
                     .AddEntityFrameworkStores<IdentityContext>();
+
+                services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, UserClaimsPrincipalFactory<IdentityUser,IdentityRole>>();
             });
         }
     }
