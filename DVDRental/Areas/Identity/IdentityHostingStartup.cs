@@ -16,10 +16,14 @@ namespace DVDRental.Areas.Identity
         {
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<IdentityContext>(options =>
-                    options.UseSqlServer(
+                    options.UseNpgsql(
                         context.Configuration.GetConnectionString("IdentityContextConnection")));
 
-                services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<IdentityUser>(options => {
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.SignIn.RequireConfirmedPhoneNumber = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                })
                     .AddEntityFrameworkStores<IdentityContext>();
             });
         }
