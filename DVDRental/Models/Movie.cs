@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace DVDRental.Models
         [Required]
         [Column("price")]
         public double price { get; set; }
+        [ForeignKey("movieId")]
+        public List<Copy> Copies { get; set; }
 
         //Movie info properties
         //Placing [Required] here gave me an error when creating Movie via TMDB id, so I assumed we can live without it.

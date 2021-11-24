@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DVDRental.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211124145528_DataSeed")]
-    partial class DataSeed
+    [Migration("20211124225725_RentalsModification")]
+    partial class RentalsModification
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,6 +35,8 @@ namespace DVDRental.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("id");
+
+                    b.HasIndex("movieId");
 
                     b.ToTable("Copy");
 
@@ -117,7 +119,6 @@ namespace DVDRental.Migrations
                         .HasColumnName("price");
 
                     b.Property<string>("title")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("title");
 
@@ -170,6 +171,32 @@ namespace DVDRental.Migrations
                             title = "Forrest Gump",
                             year = 1994
                         });
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Rental", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("copyId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("rentDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("returnDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("copyId");
+
+                    b.ToTable("Rental");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -366,6 +393,24 @@ namespace DVDRental.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("DVDRental.Models.Copy", b =>
+                {
+                    b.HasOne("DVDRental.Models.Movie", null)
+                        .WithMany("Copies")
+                        .HasForeignKey("movieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Rental", b =>
+                {
+                    b.HasOne("DVDRental.Models.Copy", null)
+                        .WithMany("Rentals")
+                        .HasForeignKey("copyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -415,6 +460,16 @@ namespace DVDRental.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Copy", b =>
+                {
+                    b.Navigation("Rentals");
+                });
+
+            modelBuilder.Entity("DVDRental.Models.Movie", b =>
+                {
+                    b.Navigation("Copies");
                 });
 #pragma warning restore 612, 618
         }

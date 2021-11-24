@@ -45,5 +45,7 @@ namespace DVDRental.Data
         }
 
         public DbSet<DVDRental.Models.Copy> Copy { get; set; }
+
+        public DbSet<DVDRental.Models.Rental> Rental { get; set; }
     }
 }

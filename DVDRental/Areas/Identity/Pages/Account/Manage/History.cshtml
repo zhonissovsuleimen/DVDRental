@@ -1,34 +1,50 @@
 ﻿@page
-@model IndexModel
+@using DVDRental.Models
+@model DVDRental.Controllers.RentalsController
 @{
     ViewData["Title"] = "History";
     ViewData["ActivePage"] = ManageNavPages.History;
+    var list = (List<Rental>)ViewData["rentals"];
 }
 
 <h4>@ViewData["Title"]</h4>
 
+@if(list == null)
+{
+    <h4>No rentlas were found</h4>
+}
+else
+{
 <table>
     <thead>
         <tr>
             <th>
-
+                <p>Movie</p>
             </th>
             <th>
-
+                <p>Rent Date</p>
             </th>
             <th>
-
-            </th>
-            <th>
-
+                <p>Return Date</p>
             </th>
         </tr>
     </thead>
     <tbody>
-
+        @foreach(var rental in list)
+        {
+            <th>
+                <p>@rental.copy.movie.title</p>
+            </th>
+            <th>
+                <p>@rental.rentDate</p>
+            </th>
+            <th>
+                <p>@rental.returnDate</p>
+            </th>
+        }
     </tbody>
 </table>
-
+}
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

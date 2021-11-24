@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DVDRental.Models
@@ -8,6 +9,8 @@ namespace DVDRental.Models
         public int id { get; set; }
         [Required]
         public bool available { get; set; }
+        [ForeignKey("copyId")]
+        public List<Rental> Rentals { get; set; }
 
         //Copy info properties
         [Required]
@@ -15,6 +18,7 @@ namespace DVDRental.Models
 
         //NotMapped proporties
         [NotMapped]
+        [ForeignKey("movieId")]
         public virtual Movie movie { get; set; }
 
         public Copy() {}

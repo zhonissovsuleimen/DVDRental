@@ -3,15 +3,17 @@ using System;
 using DVDRental.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DVDRental.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211124204409_Rentals")]
+    partial class Rentals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,8 +35,6 @@ namespace DVDRental.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("id");
-
-                    b.HasIndex("movieId");
 
                     b.ToTable("Copy");
 
@@ -181,14 +181,14 @@ namespace DVDRental.Migrations
                     b.Property<int>("copyId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("movieId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("rentDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("returnDate")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("userId")
-                        .HasColumnType("integer");
 
                     b.HasKey("id");
 
@@ -391,22 +391,15 @@ namespace DVDRental.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("DVDRental.Models.Copy", b =>
-                {
-                    b.HasOne("DVDRental.Models.Movie", null)
-                        .WithMany("Copies")
-                        .HasForeignKey("movieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DVDRental.Models.Rental", b =>
                 {
-                    b.HasOne("DVDRental.Models.Copy", null)
-                        .WithMany("Rentals")
+                    b.HasOne("DVDRental.Models.Copy", "copy")
+                        .WithMany()
                         .HasForeignKey("copyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("copy");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -458,16 +451,6 @@ namespace DVDRental.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DVDRental.Models.Copy", b =>
-                {
-                    b.Navigation("Rentals");
-                });
-
-            modelBuilder.Entity("DVDRental.Models.Movie", b =>
-                {
-                    b.Navigation("Copies");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,10 +12,9 @@ namespace DVDRental.Data
     public class IdentityContext : IdentityDbContext<IdentityUser>
     {
         IConfiguration Configuration;
-        public IdentityContext(DbContextOptions<IdentityContext> options, IConfiguration Configuration)
+        public IdentityContext(DbContextOptions<IdentityContext> options)
             : base(options)
         {
-            this.Configuration = Configuration;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
