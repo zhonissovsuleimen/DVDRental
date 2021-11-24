@@ -15,6 +15,8 @@ namespace DVDRental.Data
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<Copy> Copies { get; set; }
+        public DbSet<Rental> Rentals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,9 +45,5 @@ namespace DVDRental.Data
                 new Copy { id = 10, movieId = 5, available = true }
                 );
         }
-
-        public DbSet<DVDRental.Models.Copy> Copy { get; set; }
-
-        public DbSet<DVDRental.Models.Rental> Rental { get; set; }
     }
 }

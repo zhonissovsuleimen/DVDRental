@@ -22,7 +22,7 @@ namespace DVDRental.Controllers
         // GET: Copies
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Copy.ToListAsync());
+            return View(await _context.Copies.ToListAsync());
         }
 
         // GET: Copies/Details/5
@@ -33,7 +33,7 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
-            var copy = await _context.Copy
+            var copy = await _context.Copies
                 .FirstOrDefaultAsync(m => m.id == id);
             if (copy == null)
             {
@@ -73,7 +73,7 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
-            var copy = await _context.Copy.FindAsync(id);
+            var copy = await _context.Copies.FindAsync(id);
             if (copy == null)
             {
                 return NotFound();
@@ -124,7 +124,7 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
-            var copy = await _context.Copy
+            var copy = await _context.Copies
                 .FirstOrDefaultAsync(m => m.id == id);
             if (copy == null)
             {
@@ -139,15 +139,15 @@ namespace DVDRental.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var copy = await _context.Copy.FindAsync(id);
-            _context.Copy.Remove(copy);
+            var copy = await _context.Copies.FindAsync(id);
+            _context.Copies.Remove(copy);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CopyExists(int id)
         {
-            return _context.Copy.Any(e => e.id == id);
+            return _context.Copies.Any(e => e.id == id);
         }
     }
 }

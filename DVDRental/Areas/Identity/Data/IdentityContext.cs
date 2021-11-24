@@ -11,7 +11,6 @@ namespace DVDRental.Data
 {
     public class IdentityContext : IdentityDbContext<IdentityUser>
     {
-        IConfiguration Configuration;
         public IdentityContext(DbContextOptions<IdentityContext> options)
             : base(options)
         {

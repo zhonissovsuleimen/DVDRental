@@ -22,8 +22,8 @@ namespace DVDRental.Controllers
         // GET: Rentals
         public async Task<IActionResult> Index()
         {
-            ViewData["rentals"] = _context.Rental.ToList().Where(rental => rental.user.GetHashCode() == User.Identity.GetHashCode());
-            return View(await _context.Rental.ToListAsync());
+            ViewData["rentals"] = _context.Rentals.ToList().Where(rental => rental.user.GetHashCode() == User.Identity.GetHashCode());
+            return View(await _context.Rentals.ToListAsync());
         }
 
         // GET: Rentals/Details/5
@@ -34,7 +34,7 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
-            var rental = await _context.Rental
+            var rental = await _context.Rentals
                 .FirstOrDefaultAsync(m => m.id == id);
             if (rental == null)
             {
@@ -74,7 +74,7 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
-            var rental = await _context.Rental.FindAsync(id);
+            var rental = await _context.Rentals.FindAsync(id);
             if (rental == null)
             {
                 return NotFound();
@@ -125,7 +125,7 @@ namespace DVDRental.Controllers
                 return NotFound();
             }
 
-            var rental = await _context.Rental
+            var rental = await _context.Rentals
                 .FirstOrDefaultAsync(m => m.id == id);
             if (rental == null)
             {
@@ -140,15 +140,15 @@ namespace DVDRental.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var rental = await _context.Rental.FindAsync(id);
-            _context.Rental.Remove(rental);
+            var rental = await _context.Rentals.FindAsync(id);
+            _context.Rentals.Remove(rental);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool RentalExists(int id)
         {
-            return _context.Rental.Any(e => e.id == id);
+            return _context.Rentals.Any(e => e.id == id);
         }
     }
 }
