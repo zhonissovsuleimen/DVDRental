@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DVDRental.Areas.Identity.Pages.Account
 {
-    [Authorize(Roles = "Admin")]
+    [AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -78,6 +78,7 @@ namespace DVDRental.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            if(!User.IsInRole("Admin") && _userManager.Users.Any()) { return Page(); }
             returnUrl ??= Url.Content("~/");
             var role = _roleManager.FindByIdAsync(Input.UserRole).Result;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net.Http;
@@ -11,17 +12,18 @@ namespace DVDRental.Models
     public class Movie
     {
         public int id { get; set; }
+        [Required]
+        [Column("price")]
         public double price { get; set; }
 
         //Movie info properties
-        [JsonRequired]
-        [JsonProperty("title")]
+        [Required]
+        [Column("title")]
         public string title { get; set; }
-        [JsonRequired]
-        [JsonProperty("year")]
+        [Required]
+        [Column("year")]
         public int year { get; set; }
-
-        [JsonProperty("overview")]
+        [Column("overview")]
         public string overview { get; set; }
 
         //NotMapped properties
@@ -30,7 +32,6 @@ namespace DVDRental.Models
         [NotMapped]
         public string shortOverview { get { return getShortOverview(); } }
         [NotMapped]
-        [JsonProperty("image")]
         public string imageLink { get { return getImageLink().Result; } }
 
         //Methods

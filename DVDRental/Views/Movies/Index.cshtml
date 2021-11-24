@@ -5,11 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Movies</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (User.IsInRole("Admin")) { <p><a asp-action="Create">Create New</a></p> }
 <table class="table">
     <thead>
         <tr>
@@ -24,27 +22,29 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <img src = "@item.imageLink" width="300" alt="poster"></img>
-            </td>
-            <td>
-                <div style="height=450px;">
-                <p class="title">@Html.DisplayFor(modelItem => item.title)</p>
-                <p class="year">@Html.DisplayFor(modelItem => item.year)</p>
-                <p class="overview">@Html.DisplayFor(modelItem => item.shortOverview)</p>
-                <p class="price">Buy for @Html.DisplayFor(modelItem => item.price)zł / Rent for @Html.DisplayFor(modelItem => item.rentPrice)zł</p>
-                </div>
-            </td>
-            @if(User.Identity.IsAuthenticated){
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-            }
-        </tr>
-}
+    @foreach(var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src = "@item.imageLink" width="300" alt="poster">
+                </td>
+                <td>
+                    <div style="height:450px;">
+                        <p class="title">@Html.DisplayFor(modelItem => item.title)</p>
+                        <p class="year">@Html.DisplayFor(modelItem => item.year)</p>
+                        <p class="overview">@Html.DisplayFor(modelItem => item.shortOverview)</p>
+                        <p class="price">Buy for @Html.DisplayFor(modelItem => item.price)zł / Rent for @Html.DisplayFor(modelItem => item.rentPrice)zł</p>
+                    </div>
+                </td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                    </td>
+                }
+            </tr>
+        }
     </tbody>
 </table>
