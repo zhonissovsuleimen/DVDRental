@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Data;
 using DVDRental.Models;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace DVDRental.Controllers
 {
@@ -54,8 +56,9 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,price,title,year,overview")] Movie movie)
+        public async Task<IActionResult> Create(int tmdbid, double price, [Bind("id, price")] Movie movie)
         {
+            movie = new Movie(tmdbid, price);
             if (ModelState.IsValid)
             {
                 _context.Add(movie);
@@ -86,7 +89,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,price,title,year,overview")] Movie movie)
+        public async Task<IActionResult> Edit(int id, [Bind("price")] Movie movie)
         {
             if (id != movie.id)
             {

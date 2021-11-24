@@ -69,7 +69,7 @@ namespace DVDRental
 
             AddAdminRole(serviceProvider).Wait();
         }
-        d
+
         public static async Task AddAdminRole(IServiceProvider serviceProvider)
         {
             string role = "Admin";
