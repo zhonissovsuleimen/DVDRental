@@ -22,7 +22,10 @@ namespace DVDRental.Controllers
         // GET: Copies
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Copies.ToListAsync());
+            ViewData["movies"] = _context.Movies.ToList();
+            List<Copy> copies = await _context.Copies.ToListAsync();
+            copies.Sort((a, b) => a.id - b.id);
+            return View(copies);
         }
 
         // GET: Copies/Details/5
@@ -39,13 +42,14 @@ namespace DVDRental.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["movies"] = _context.Movies.ToList();
             return View(copy);
         }
 
         // GET: Copies/Create
         public IActionResult Create()
         {
+            ViewData["movies"] = _context.Movies.ToList();
             return View();
         }
 
@@ -78,6 +82,7 @@ namespace DVDRental.Controllers
             {
                 return NotFound();
             }
+            ViewData["movies"] = _context.Movies.ToList();
             return View(copy);
         }
 
@@ -130,7 +135,7 @@ namespace DVDRental.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["movies"] = _context.Movies.ToList();
             return View(copy);
         }
 

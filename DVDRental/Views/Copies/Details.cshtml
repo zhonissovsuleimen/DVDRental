@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var movies = (List<Movie>)ViewData["movies"];
 }
 
 <h1>Details</h1>
@@ -11,6 +12,12 @@
     <h4>Copy</h4>
     <hr />
     <dl class="row">
+        <dt class = "col-sm-2">
+            <p>Copy of</p>
+        </dt>
+        <dd class = "col-sm-10">
+            @movies.Find(m => Model.movieId == m.id).title
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.available)
         </dt>

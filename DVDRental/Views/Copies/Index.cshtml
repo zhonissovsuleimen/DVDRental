@@ -3,9 +3,10 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var movies = (List<Movie>)ViewData["movies"];
 }
 
-<h1>Index</h1>
+<h1>Copies</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -14,7 +15,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.available)
+                <p>Copy id</p>
+            </th>
+            <th>
+                <p>Movie title</p>
+            </th>
+            <th>
+                <p>Availability</p>
             </th>
             <th></th>
         </tr>
@@ -22,6 +29,12 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>
+            <td>
+                @movies.Find(m => item.movieId == m.id).title
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.available)
             </td>
