@@ -10,8 +10,6 @@ namespace DVDRental.Areas.Identity.Pages.Account.Manage
     {
         public static string Index => "Index";
 
-        public static string History => "History";
-
         public static string Email => "Email";
 
         public static string ChangePassword => "ChangePassword";
@@ -27,8 +25,6 @@ namespace DVDRental.Areas.Identity.Pages.Account.Manage
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
-
-        public static string HistoryNavClass(ViewContext viewContext) => PageNavClass(viewContext, History);
 
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
 

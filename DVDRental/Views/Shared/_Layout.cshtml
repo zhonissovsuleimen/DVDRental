@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -30,6 +33,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Rentals" asp-action="Index">Rentals</a>
                             </li>
                         }
+                        else if(!UserManager.Users.Any()) {}
                         else
                         {
                             <li class="nav-item">

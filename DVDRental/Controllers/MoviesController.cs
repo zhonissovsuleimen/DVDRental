@@ -9,6 +9,7 @@ using DVDRental.Data;
 using DVDRental.Models;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DVDRental.Controllers
 {
@@ -71,6 +72,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Movies/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -89,6 +91,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Movies/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -99,6 +102,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(int tmdbid, double price, [Bind("id, price")] Movie movie)
         {
             movie = new Movie(tmdbid, price);
@@ -112,6 +116,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Movies/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -132,6 +137,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("price")] Movie movie)
         {
             if (id != movie.id)
@@ -163,6 +169,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Movies/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -183,6 +190,7 @@ namespace DVDRental.Controllers
         // POST: Movies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var movie = await _context.Movies.FindAsync(id);

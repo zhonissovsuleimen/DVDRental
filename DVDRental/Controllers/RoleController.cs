@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DVDRental.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         private RoleManager<IdentityRole> roleManager;

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Data;
 using DVDRental.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DVDRental.Controllers
 {
@@ -20,6 +21,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Copies
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             ViewData["movies"] = _context.Movies.ToList();
@@ -29,6 +31,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Copies/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,6 +50,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Copies/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["movies"] = _context.Movies.ToList();
@@ -58,6 +62,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("id,available,movieId")] Copy copy)
         {
             if (ModelState.IsValid)
@@ -70,6 +75,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Copies/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,6 +95,7 @@ namespace DVDRental.Controllers
         // POST: Copies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,available,movieId")] Copy copy)
@@ -122,6 +129,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Copies/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,6 +148,7 @@ namespace DVDRental.Controllers
         }
 
         // POST: Copies/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

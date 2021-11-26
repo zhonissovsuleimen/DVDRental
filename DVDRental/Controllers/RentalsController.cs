@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DVDRental.Data;
 using DVDRental.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DVDRental.Controllers
 {
@@ -21,6 +22,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Rentals
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             ViewData["users"] = _context.Users.ToList();
@@ -40,6 +42,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Rentals/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,6 +61,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Rentals/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["users"] = _context.Users.ToList();
@@ -72,6 +76,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(int copyId, string userId,[Bind("id")] Rental rental)
         {
             rental.copyId = copyId;
@@ -88,6 +93,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Rentals/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -109,6 +115,7 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("id,userId,copyId,rentDate,returnDate")] Rental rental)
         {
             if (id != rental.id)
@@ -144,6 +151,7 @@ namespace DVDRental.Controllers
         }
 
         // GET: Rentals/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -164,6 +172,7 @@ namespace DVDRental.Controllers
         // POST: Rentals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var rental = await _context.Rentals.FindAsync(id);
