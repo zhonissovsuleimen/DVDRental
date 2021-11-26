@@ -10,8 +10,8 @@ namespace DVDRental.Models
         public int id { get; set; }
 
         //Rental info properties
-        [Required]
-        public int userId { get; set; }
+        //Placing [Required] here gave me an error when creating new rental, without it works fine
+        public string userId { get; set; }
         [Required]
         public int copyId { get; set; }
 
@@ -28,7 +28,7 @@ namespace DVDRental.Models
         public virtual IdentityUser user { get; set; }
 
         public Rental() { }
-        public Rental(int userId, int copyId)
+        public Rental(string userId, int copyId)
         {
             this.userId = userId;
             this.copyId = copyId;

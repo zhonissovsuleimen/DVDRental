@@ -1,8 +1,10 @@
-﻿@model DVDRental.Models.Rental
+﻿    @model DVDRental.Models.Rental
 
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var copies = (List<Copy>)ViewData["copies"];
+    var copy = copies.Find(c => c.id == Model.copyId);
 }
 
 <h1>Edit</h1>
@@ -16,17 +18,17 @@
             <input type="hidden" asp-for="id" />
             <div class="form-group">
                 <label asp-for="userId" class="control-label"></label>
-                <input asp-for="userId" class="form-control" />
+                <input asp-for="userId"  class="form-control" readonly/>
                 <span asp-validation-for="userId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="copyId" class="control-label"></label>
-                <select asp-for="copyId" class="form-control" asp-items="ViewBag.copyId"></select>
+                <input asp-for="copyId"  class="form-control" readonly value='@copy.id'/>
                 <span asp-validation-for="copyId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="rentDate" class="control-label"></label>
-                <input asp-for="rentDate" class="form-control" />
+                <input asp-for="rentDate" class="form-control" readonly/>
                 <span asp-validation-for="rentDate" class="text-danger"></span>
             </div>
             <div class="form-group">

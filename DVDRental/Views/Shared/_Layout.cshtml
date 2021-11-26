@@ -30,6 +30,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Rentals" asp-action="Index">Rentals</a>
                             </li>
                         }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Rentals" asp-action="History">History</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

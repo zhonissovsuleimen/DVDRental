@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DVDRental.Data;
 using DVDRental.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace DVDRental.Controllers
 {
@@ -22,8 +23,20 @@ namespace DVDRental.Controllers
         // GET: Rentals
         public async Task<IActionResult> Index()
         {
-            ViewData["rentals"] = _context.Rentals.ToList().Where(rental => rental.user.GetHashCode() == User.Identity.GetHashCode());
+            ViewData["users"] = _context.Users.ToList();
+            ViewData["movies"] = _context.Movies.ToList();
+            ViewData["copies"] = _context.Copies.ToList();
             return View(await _context.Rentals.ToListAsync());
+        }
+
+        // GET: History
+        public async Task<IActionResult> History()
+        {
+            ViewData["movies"] = _context.Movies.ToList();
+            ViewData["copies"] = _context.Copies.ToList();
+            string userId = _context.Users.Where(u => u.UserName == User.Identity.Name).First().Id;
+            var rentals = await _context.Rentals.Where(r => r.userId == userId).ToListAsync();
+            return View(rentals);
         }
 
         // GET: Rentals/Details/5
@@ -47,6 +60,10 @@ namespace DVDRental.Controllers
         // GET: Rentals/Create
         public IActionResult Create()
         {
+            ViewData["users"] = _context.Users.ToList();
+            var copies = _context.Copies.Where(c => c.available).ToList();
+            copies.Sort((a, b) => a.id - b.id);
+            ViewData["copies"] = copies;
             return View();
         }
 
@@ -55,11 +72,15 @@ namespace DVDRental.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,userId,copyId,rentDate,returnDate")] Rental rental)
+        public async Task<IActionResult> Create(int copyId, string userId,[Bind("id")] Rental rental)
         {
+            rental.copyId = copyId;
+            rental.userId = userId;
+            rental.rentDate = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(rental);
+                _context.Copies.Find(copyId).available = false;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -79,6 +100,7 @@ namespace DVDRental.Controllers
             {
                 return NotFound();
             }
+            ViewData["copies"] = _context.Copies.ToList();
             return View(rental);
         }
 
@@ -98,6 +120,10 @@ namespace DVDRental.Controllers
             {
                 try
                 {
+                    if(rental.returnDate != null) 
+                    {
+                        _context.Copies.Find(rental.copyId).available = true;
+                    }
                     _context.Update(rental);
                     await _context.SaveChangesAsync();
                 }

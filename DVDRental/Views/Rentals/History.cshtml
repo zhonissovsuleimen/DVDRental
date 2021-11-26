@@ -2,26 +2,19 @@
 @model IEnumerable<DVDRental.Models.Rental>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "History";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var users = (List<IdentityUser>)ViewData["users"];
     var copies = (List<Copy>)ViewData["copies"];
     var movies = (List<Movie>)ViewData["movies"];
 }
 
-<h1>Rentals</h1>
+<h1>History</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                <p>User</p>
-            </th>
-            <th>
-                <p>Copy ID</p>
+                <p>Movie</p>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.rentDate)
@@ -29,17 +22,13 @@
             <th>
                 @Html.DisplayNameFor(model => model.returnDate)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @users.Find(u => u.Id == item.userId).Email
-            </td>
-            <td>
-                @copies.Find(c => c.id == item.copyId).id
+                @movies.Find(m => m.id == copies.Find(c => c.id == item.copyId).movieId).title
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.rentDate)
@@ -53,11 +42,6 @@
                 {
                     <p>@item.returnDate</p>
                 }
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
             </td>
         </tr>
 }
