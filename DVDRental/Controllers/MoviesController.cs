@@ -22,8 +22,51 @@ namespace DVDRental.Controllers
         }
 
         // GET: Movies
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string sortItem)
         {
+            ViewData["copies"] = _context.Copies.Where(c => c.available).ToList();
+            IEnumerable<Movie> movies = await _context.Movies.ToListAsync();
+            ViewBag.NextSortOrder = sortOrder == null || sortOrder == "descending" ? "ascending" : "descending";
+            ViewBag.TitleSortingSymbol = sortItem == "title" ? ViewBag.NextSortOrder == "ascending" ? "▾" : "▴" : "";
+            ViewBag.YearSortingSymbol = sortItem == "year" ? ViewBag.NextSortOrder == "ascending" ? "▾" : "▴" : "";
+            ViewBag.PriceSortingSymbol = sortItem == "price" ? ViewBag.NextSortOrder == "ascending" ? "▾" : "▴" : "";
+            ViewBag.SortItem = sortItem;
+            switch (sortOrder)
+            {
+                case "descending":
+                    switch (sortItem)
+                    {
+                        case "title":
+                            movies = movies.OrderByDescending(p => p.title);
+                            break;
+                        case "year":
+                            movies = movies.OrderByDescending(p => p.year);
+                            break;
+                        case "price":
+                            movies = movies.OrderByDescending(p => p.price);
+                            break;
+                        default: break;
+                    }
+                    break;
+                case "ascending":
+                    switch (sortItem)
+                    {
+                        case "title":
+                            movies = movies.OrderBy(p => p.title);
+                            break;
+                        case "year":
+                            movies = movies.OrderBy(p => p.year);
+                            break;
+                        case "price":
+                            movies = movies.OrderBy(p => p.price);
+                            break;
+                        default: break;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return View(movies);
             return View(await _context.Movies.ToListAsync());
         }
 
