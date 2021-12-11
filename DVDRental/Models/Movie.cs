@@ -1,12 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace DVDRental.Models
 {
@@ -31,19 +30,19 @@ namespace DVDRental.Models
 
         //NotMapped properties
         [NotMapped]
-        public int tmdbId { get { return getTMDBId().Result; } }
+        public int tmdbId { get { return getTMDBId(); } }
         [NotMapped]
         public double rentPrice { get { return getRentPrice(); } }
         [NotMapped]
         public string shortOverview { get { return getShortOverview(); } }
         [NotMapped]
-        public string imageLink { get { return getImageLink().Result; } }
+        public string imageLink { get { return getImageLink(); } }
 
         //Constructors
         public Movie() {}
         public Movie(int tmdbId, double price)
         {
-            var movie = getMovieByTMDBId(tmdbId, price).Result;
+            var movie = getMovieByTMDBId(tmdbId, price);
             if (movie != null)
             {
                 this.title = movie.title;
@@ -52,28 +51,12 @@ namespace DVDRental.Models
                 this.overview = movie.overview;
             }
         }
-        public Movie(int id, string title, int year, string overview)
-        {
-            this.id = id;
-            this.title = title;
-            this.year = year;
-            this.overview = overview;
-        }
-        public Movie(int id, double price, string title, int year, string overview)
-        {
-            this.id = id;
-            this.price = price;
-            this.title = title;
-            this.year = year;
-            this.overview = overview;
-        }
         public Movie(double price, string title, int year, string overview)
         {
             this.title = title;
             this.year = year;
             this.overview = overview;
         }
-
         //Methods
         private string getShortOverview(int length = 250)
         {
@@ -82,82 +65,88 @@ namespace DVDRental.Models
             length = Math.Min(overview.Length, length);
             return overview.Substring(0, length) + dots;
         }
-        private async Task<string> getImageLink()
+        private string getImageLink()
         {
-            using (var httpClient = new HttpClient())
+            string key = Data.APIKeys.TheMovieDB_api_key;
+            string url = $"https://api.themoviedb.org/3/search/movie?api_key={key}&query={title}";
+            string imageLink = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2";
+            var client = new RestClient($"https://api.themoviedb.org/3/search/movie?api_key={key}&query={title}");
+            try
             {
-                string key = Data.APIKeys.TheMovieDB_api_key;
-                string url = $"https://api.themoviedb.org/3/search/movie?api_key={key}&query={title}";
-                string imageLink = "https://www.themoviedb.org/t/p/w600_and_h900_bestv2";
-                var task = await httpClient.GetAsync(url).ConfigureAwait(false);
-                if (task.IsSuccessStatusCode)
+                var request = new RestRequest(Method.GET);
+                request.AddHeader("api_key", key);
+                IRestResponse response = client.Execute(request);
+                var jsonString = response.Content;
+                var parsedObject = JObject.Parse(jsonString);
+                var linqList = parsedObject.SelectToken("results").ToArray();
+                foreach (var linq in linqList)
                 {
-                    var content = task.Content.ReadAsStringAsync();
-                    var jsonString = content.Result;
-                    var parsedObject = JObject.Parse(jsonString);
-                    var linqList = parsedObject.SelectToken("results").ToArray();
-                    foreach (var linq in linqList)
+                    JObject obj = JObject.Parse(linq.ToString());
+                    if (obj["title"].ToString() == title && obj["release_date"].ToString().Substring(0, 4) == year.ToString())
                     {
-                        JObject obj = JObject.Parse(linq.ToString());
-                        if (obj["title"].ToString() == title && obj["release_date"].ToString().Substring(0, 4) == year.ToString())
-                        {
-                            imageLink += obj["poster_path"].ToString();
-                            return imageLink;
-                        }
+                        imageLink += obj["poster_path"].ToString();
+                        return imageLink;
                     }
-                    return "";
                 }
+            }
+            catch (Exception)
+            {
                 return "";
             }
+            return "";
+            
         }
         private double getRentPrice()
         {
             double divisor = 3;
-            return this.price / divisor;
+            return Math.Round(this.price / divisor,2);
         }
-        private async Task<int> getTMDBId()
+        private int getTMDBId()
         {
-            using (var httpClient = new HttpClient())
+            string key = Data.APIKeys.TheMovieDB_api_key;
+            var client = new RestClient($"https://api.themoviedb.org/3/search/movie?api_key={key}&query={title}");
+            try
             {
-                string key = Data.APIKeys.TheMovieDB_api_key;
-                string url = $"https://api.themoviedb.org/3/search/movie?api_key={key}&query={title}";
-                var task = await httpClient.GetAsync(url).ConfigureAwait(false);
-                if (task.IsSuccessStatusCode)
+                var request = new RestRequest(Method.GET);
+                request.AddHeader("api_key", key);
+                IRestResponse response = client.Execute(request);
+                var jsonString = response.Content;
+                var parsedObject = JObject.Parse(jsonString);
+                var linqList = parsedObject.SelectToken("results").ToArray();
+                foreach (var linq in linqList)
                 {
-                    var content = task.Content.ReadAsStringAsync();
-                    var jsonString = content.Result;
-                    var parsedObject = JObject.Parse(jsonString);
-                    var linqList = parsedObject.SelectToken("results").ToArray();
-                    foreach (var linq in linqList)
+                    JObject obj = JObject.Parse(linq.ToString());
+                    if (obj["title"].ToString() == title && obj["release_date"].ToString().Substring(0, 4) == year.ToString())
                     {
-                        JObject obj = JObject.Parse(linq.ToString());
-                        if (obj["title"].ToString() == title && obj["release_date"].ToString().Substring(0, 4) == year.ToString())
-                        {
-                            return int.Parse(obj["id"].ToString());
-                        }
+                        return int.Parse(obj["id"].ToString());
                     }
-                    return -1;
                 }
+            }
+            catch (Exception)
+            {
                 return -1;
             }
+            return -1;
         }
-        private async Task<Movie> getMovieByTMDBId(int theMovieDbId, double price)
+        private Movie getMovieByTMDBId(int theMovieDbId, double price)
         {
-            using (var httpClient = new HttpClient())
+            string key = Data.APIKeys.TheMovieDB_api_key;
+            var client = new RestClient($"https://api.themoviedb.org/3/movie/{theMovieDbId}?api_key={key}");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("api_key", key);
+            try
             {
-                string key = Data.APIKeys.TheMovieDB_api_key;
-                string url = $"https://api.themoviedb.org/3/movie/{theMovieDbId}?api_key={key}";
-                var task = await httpClient.GetAsync(url).ConfigureAwait(false);
-                if (task.IsSuccessStatusCode)
-                {
-                    var content = task.Content.ReadAsStringAsync();
-                    var jsonString = content.Result;
-                    var parsedObject = JObject.Parse(jsonString);
-                    string title = parsedObject["original_title"].ToString();
-                    int year = int.Parse(parsedObject["release_date"].ToString().Substring(0, 4));
-                    string overview = parsedObject["overview"].ToString();
-                    return new Movie(price, title, year, overview);
-                }
+                IRestResponse response = client.Execute(request);
+                var jsonString = response.Content;
+                var parsedObject = JObject.Parse(jsonString);
+                if (parsedObject["success"] != null && parsedObject["success"].ToString() == "False") { return null; }
+                string title = parsedObject["original_title"].ToString();
+                int year = int.Parse(parsedObject["release_date"].ToString().Substring(0, 4));
+                string overview = parsedObject["overview"].ToString();
+                return new Movie(price, title, year, overview);
+            }
+            catch (Exception)
+            {
                 return null;
             }
         }

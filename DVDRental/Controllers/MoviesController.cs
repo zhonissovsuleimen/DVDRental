@@ -25,7 +25,7 @@ namespace DVDRental.Controllers
         // GET: Movies
         public async Task<IActionResult> Index(string sortOrder, string sortItem)
         {
-            ViewData["copies"] = _context.Copies.Where(c => c.available).ToList();
+            ViewData["copies"] = await _context.Copies.Where(c => c.available).ToListAsync();
             IEnumerable<Movie> movies = await _context.Movies.ToListAsync();
             ViewBag.NextSortOrder = sortOrder == null || sortOrder == "descending" ? "ascending" : "descending";
             ViewBag.TitleSortingSymbol = sortItem == "title" ? ViewBag.NextSortOrder == "ascending" ? "▾" : "▴" : "";
@@ -68,7 +68,6 @@ namespace DVDRental.Controllers
                     break;
             }
             return View(movies);
-            return View(await _context.Movies.ToListAsync());
         }
 
         // GET: Movies/Details/5
@@ -106,7 +105,7 @@ namespace DVDRental.Controllers
         public async Task<IActionResult> Create(int tmdbid, double price, [Bind("id, price")] Movie movie)
         {
             movie = new Movie(tmdbid, price);
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && movie.title != "")
             {
                 _context.Add(movie);
                 await _context.SaveChangesAsync();
